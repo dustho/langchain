@@ -1,33 +1,39 @@
+from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import PromptTemplate
+from langchain_ollama.chat_models import ChatOllama
 from langchain_openai.chat_models import ChatOpenAI
+from langchain_anthropic.chat_models import ChatAnthropic
 
 information = """
-- Name: 침착맨
-- Link: https://namu.wiki/w/%EC%B9%A8%EC%B0%A9%EB%A7%A8
+- Link: https://en.wikipedia.org/wiki/Elon_Musk
 """
 
 if __name__ == "__main__":
     print("Hello World")
 
     summary_template = """
-        given the information link about a person: 
-        {information} 
+        given the information linked page about a person: 
+        {information}
         
-        from I want you to create:
+        If you can't access internet and read content in linked page, Reply that "I can't read it".
+        Do not pretend to have read or accessed any URLs or external web pages.
+        Honesty and accuracy are more important than trying to be helpful. 
+        
+        If you can access internet and read content in link, from I want you to create:
         1. a short summary
         2. two interesting facts about them
-        
-        output language is korean.
+        3. Please complete the sentence that begins with "Born to a wealthy family in Pretoria," as it appears in the linked page.
     """
 
     summary_prompt_template = PromptTemplate(
         input_variables=["information"], template=summary_template
     )
 
-    llm = ChatOpenAI(temperature=0, model="gpt-3.5-turbo")
+    # llm = ChatAnthropic(temperature=0, model_name="claude-sonnet-4-20250514", max_tokens_to_sample=200, timeout=120, max_retries=2)
+    # llm = ChatOpenAI(temperature=0, model="gpt-3.5-turbo")
+    llm = ChatOllama(model="llama3.1:8b")
+    chain = summary_prompt_template | llm | StrOutputParser()
 
-    chain = summary_prompt_template | llm
-
-    res = chain.invoke(input={"information": "I want you to create"})
+    res = chain.invoke(input={"information": information})
 
     print(res)
