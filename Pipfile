@@ -12,6 +12,7 @@ black = "*"
 python-dotenv = "*"
 langchain-anthropic = "*"
 langchain-ollama = "*"
+langchain-tavily = "*"
 
 [dev-packages]
 

@@ -32,4 +32,5 @@ def scrape_linkedin_profile(linkedin_profile_url: str, mock: bool = False):
   return data
 
 if __name__ == "__main__":
-  scrape_linkedin_profile(linkedin_profile_url="", mock=True)
+  result = scrape_linkedin_profile(linkedin_profile_url="", mock=True)
+  print(result)
